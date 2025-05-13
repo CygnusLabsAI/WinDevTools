@@ -4,6 +4,8 @@
 #define AWINDOW_H
 
 #include <Windows.h>
+#include <vector>
+#include <string>
 
 namespace WinDevTools {
 
@@ -29,6 +31,8 @@ namespace WinDevTools {
 			private:
 				static LRESULT Thunk(HWND _hWnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam);
 				static LRESULT CALLBACK S_WndProc(HWND _hWnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam);
+
+				static const std::vector<std::wstring> s_szSystemClassNames;
 
 				HINSTANCE m_hInstance;
 				LPCWSTR m_lpszClassName;

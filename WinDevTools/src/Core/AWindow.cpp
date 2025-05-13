@@ -9,35 +9,46 @@ namespace WinDevTools {
 
 	namespace GUI {
 
+#ifdef _INC_COMMCTRL
+		const std::vector<std::wstring> AWindow::s_szSystemClassNames = { ANIMATE_CLASS,  TEXT("BUTTON"), TEXT("COMBOBOX"), DATETIMEPICK_CLASS, TEXT("EDIT"), HOTKEY_CLASS, LINK_CLASS, TEXT("LISTBOX"), TEXT("MDICLIENT"), MONTHCAL_CLASS, NATIVEFNTCTL_CLASS, PROGRESS_CLASS, REBARCLASSNAME, TEXT("SCROLLBAR"), TEXT("STATIC"), STATUSCLASSNAME, TOOLBARCLASSNAME, TOOLTIPS_CLASS, TRACKBAR_CLASS, UPDOWN_CLASS, WC_BUTTON, WC_COMBOBOX, WC_COMBOBOXEX, WC_EDIT, WC_HEADER, WC_LISTBOX, WC_IPADDRESS, WC_LINK, WC_LISTVIEW, WC_NATIVEFONTCTL, WC_PAGESCROLLER, WC_SCROLLBAR, WC_STATIC, WC_TABCONTROL, WC_TREEVIEW };
+#else
+		const std::vector<std::wstring> AWindow::s_szSystemClassNames = { TEXT("BUTTON"), TEXT("COMBOBOX"), TEXT("EDIT"), TEXT("LISTBOX"), TEXT("MDICLIENT"), TEXT("SCROLLBAR"), TEXT("STATIC") };
+#endif
+
 		AWindow::AWindow(LPCWSTR _lpszClassName, DWORD _dwStyle, HICON _hIcon, LPCWSTR _lpszMenuName, HCURSOR _hCursor, HBRUSH _hbrBackground, HICON _hIconSm, int _cbClsExtra, int _cbWndExtra, HINSTANCE _hInstance):
 			m_hInstance(_hInstance),
 			m_lpszClassName(_lpszClassName),
 			m_hWnd(NULL)
 		{
-			WNDCLASSEX wcex;
-			wcex.cbSize = sizeof(WNDCLASSEX);
-			wcex.cbClsExtra = _cbClsExtra;
-			wcex.cbWndExtra = _cbWndExtra + 8;
-			wcex.hbrBackground = _hbrBackground;
-			wcex.hCursor = _hCursor;
-			wcex.hIcon = _hIcon;
-			wcex.hIconSm = _hIconSm;
-			wcex.hInstance = m_hInstance;
-			wcex.lpfnWndProc = S_WndProc;
-			wcex.lpszClassName = m_lpszClassName;
-			wcex.lpszMenuName = _lpszMenuName;
-			wcex.style = _dwStyle;
+			auto it = std::find(s_szSystemClassNames.begin(), s_szSystemClassNames.end(), std::wstring(_lpszClassName));
 
-			DWORD dwLastError;
-			if(!RegisterClassEx(&wcex))
+			if(it == s_szSystemClassNames.end())
 			{
-				dwLastError = GetLastError();
-				switch(dwLastError)
+				WNDCLASSEX wcex;
+				wcex.cbSize = sizeof(WNDCLASSEX);
+				wcex.cbClsExtra = _cbClsExtra;
+				wcex.cbWndExtra = _cbWndExtra + 8;
+				wcex.hbrBackground = _hbrBackground;
+				wcex.hCursor = _hCursor;
+				wcex.hIcon = _hIcon;
+				wcex.hIconSm = _hIconSm;
+				wcex.hInstance = m_hInstance;
+				wcex.lpfnWndProc = S_WndProc;
+				wcex.lpszClassName = m_lpszClassName;
+				wcex.lpszMenuName = _lpszMenuName;
+				wcex.style = _dwStyle;
+
+				DWORD dwLastError;
+				if(!RegisterClassEx(&wcex))
 				{
-					case ERROR_CLASS_ALREADY_EXISTS:
-						break;
-					default:
-						DebugBreak();
+					dwLastError = GetLastError();
+					switch(dwLastError)
+					{
+						case ERROR_CLASS_ALREADY_EXISTS:
+							break;
+						default:
+							DebugBreak();
+					}
 				}
 			}
 		}
