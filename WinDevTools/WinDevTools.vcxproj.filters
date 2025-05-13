@@ -15,18 +15,18 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Core\ChildWindow.cpp">
+    <ClCompile Include="src\Core\AChildWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Window.cpp">
+    <ClCompile Include="src\Core\AWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Core\ChildWindow.h">
+    <ClInclude Include="src\Core\AChildWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Window.h">
+    <ClInclude Include="src\Core\AWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

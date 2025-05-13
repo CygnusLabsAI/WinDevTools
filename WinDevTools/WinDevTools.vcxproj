@@ -40,7 +40,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>Utility</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -139,12 +139,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Core\ChildWindow.cpp" />
-    <ClCompile Include="src\Core\Window.cpp" />
+    <ClCompile Include="src\Core\AChildWindow.cpp" />
+    <ClCompile Include="src\Core\AWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Core\ChildWindow.h" />
-    <ClInclude Include="src\Core\Window.h" />
+    <ClInclude Include="src\Core\AChildWindow.h" />
+    <ClInclude Include="src\Core\AWindow.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
