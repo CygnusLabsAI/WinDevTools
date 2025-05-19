@@ -3,6 +3,7 @@
 
 #include "framework.h"
 #include "WinDevToolsTest.h"
+#include "Controls/EditControl.h"
 
 using namespace WinDevTools::GUI;
 
@@ -15,6 +16,7 @@ HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 
+Control::EditControl EditCtrl;
 // Forward declarations of functions included in this code module:
 //ATOM                MyRegisterClass(HINSTANCE hInstance);
 //BOOL                InitInstance(HINSTANCE, int);
@@ -23,6 +25,9 @@ WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 /** The above functions are handled by AWindow **/
 
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+
+uint8_t dummy = 0;
+bool goUp = false;
 
 class MainWindow: public AWindow
 {
@@ -46,12 +51,58 @@ class MainWindow: public AWindow
         {
             switch(_uiMsg)
             {
+                case WM_CREATE:
+                    {
+                        EditCtrl.create(_hWnd, 10, 10, 100, 75, (HMENU)1001, ES_MULTILINE | ES_AUTOVSCROLL | WS_VSCROLL | ES_WANTRETURN, NULL);
+                        //EditCtrl.setReadOnly(true);
+                        //EditCtrl.setPassword(true);
+                        //EditCtrl.setTextColor(RGB(255, 0, 0));
+                        //EditCtrl.setBGColor(RGB(0, 0, 0));
+                        SetTimer(_hWnd, 0, 10000, NULL);
+                        UINT left, right;
+                        //EditCtrl.limitText(5);
+                        EditCtrl.setText(L"Hello World");
+                        int debug = 0;
+                    }
+                    return DefWindowProc(_hWnd, _uiMsg, _wParam, _lParam);
+                case WM_TIMER:
+                    {
+                        //if(goUp)
+                        //{
+                        //    dummy++;
+                        //    if(dummy == 255) goUp = false;
+                        //}
+                        //else
+                        //{
+                        //    dummy--;
+                        //    if(dummy == 0) goUp = true;
+                        //}
+                        //EditCtrl.setTextColor(RGB(255, 0 - dummy, 0 - dummy));
+                        //EditCtrl.setBGColor(RGB(dummy, dummy, dummy));
+                        //RedrawWindow(EditCtrl.getHandle(), NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+                        std::wstring replace = L"[REPLACE]";
+                        EditCtrl.replaceSel(false, replace.c_str());
+                        int debug = 0;
+                    }
+                    break;
+                case WM_CTLCOLOREDIT:
+                    {
+                        if((HWND)_lParam == EditCtrl.getHandle())
+                            return EditCtrl.handleCTLCOLOREDIT(_wParam);
+                    }
+                    break;
                 case WM_COMMAND:
                     {
                         int wmId = LOWORD(_wParam);
                         // Parse the menu selections:
                         switch(wmId)
                         {
+                            case 1001:
+                                {
+                                    int notification = HIWORD(_wParam);
+                                    int debug = 0;
+                                }
+                                break;
                             case IDM_ABOUT:
                                 DialogBox(getInstance(), MAKEINTRESOURCE(IDD_ABOUTBOX), _hWnd, About);
                                 break;

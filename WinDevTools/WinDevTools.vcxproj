@@ -142,15 +142,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Controls\AControlWindow.cpp" />
+    <ClCompile Include="src\Controls\EditControl.cpp" />
     <ClCompile Include="src\Core\AChildWindow.cpp" />
     <ClCompile Include="src\Core\APopupWindow.cpp" />
     <ClCompile Include="src\Core\AWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Controls\AControlWindow.h" />
+    <ClInclude Include="src\Controls\EditControl.h" />
     <ClInclude Include="src\Core\AChildWindow.h" />
     <ClInclude Include="src\Core\APopupWindow.h" />
     <ClInclude Include="src\Core\AWindow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="src\Controls\commctrl_h_messages.txt" />
+    <Text Include="src\Controls\namespace.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

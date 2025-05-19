@@ -7,14 +7,15 @@ namespace WinDevTools {
 
 	namespace GUI {
 
-		AControlWindow::AControlWindow(LPCWSTR _lpszClassName):
-			AChildWindow(_lpszClassName)
+		AControlWindowW::AControlWindowW(LPCWSTR _lpszClassName):
+			AChildWindowW(_lpszClassName)
 		{
 		}
 
-		const HWND AControlWindow::create(HWND _hWndParent, int _iWidth, int _iHeight, LPCWSTR _lpszWindowName, int _iX, int _iY, DWORD _dwStyle, DWORD _dwExStyle)
+		const HWND AControlWindowW::create(HWND _hWndParent, int _iWidth, int _iHeight, LPCWSTR _lpszWindowName, int _iX, int _iY, DWORD _dwStyle, DWORD _dwExStyle, HMENU _hID)
 		{
-			return AChildWindow::create(_hWndParent, _iWidth, _iHeight, _lpszWindowName, _iX, _iY, _dwStyle, _dwExStyle);
+			m_hID = _hID;
+			return AChildWindowW::create(_hWndParent, _iWidth, _iHeight, _lpszWindowName, _iX, _iY, _dwStyle, _hID, _dwExStyle);
 		}
 	}
 }

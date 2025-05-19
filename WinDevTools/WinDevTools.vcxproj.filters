@@ -27,6 +27,9 @@
     <ClCompile Include="src\Controls\AControlWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Controls\EditControl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Core\AChildWindow.h">
@@ -41,5 +44,12 @@
     <ClInclude Include="src\Controls\AControlWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Controls\EditControl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="src\Controls\namespace.txt" />
+    <Text Include="src\Controls\commctrl_h_messages.txt" />
   </ItemGroup>
 </Project>
