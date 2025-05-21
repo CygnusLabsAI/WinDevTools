@@ -4,6 +4,7 @@
 #include "framework.h"
 #include "WinDevToolsTest.h"
 #include "Controls/EditControl.h"
+#include "Controls/StaticControl.h"
 
 using namespace WinDevTools::GUI;
 
@@ -17,6 +18,7 @@ WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 
 Control::EditControl EditCtrl;
+Control::StaticControlW StaticCtrl;
 // Forward declarations of functions included in this code module:
 //ATOM                MyRegisterClass(HINSTANCE hInstance);
 //BOOL                InitInstance(HINSTANCE, int);
@@ -29,6 +31,10 @@ INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 uint8_t dummy = 0;
 bool goUp = false;
 
+HBITMAP hBitmap;
+HICON hIcon;
+HENHMETAFILE hEnhMetaFile;
+
 class MainWindow: public AWindow
 {
     public:
@@ -38,7 +44,7 @@ class MainWindow: public AWindow
                     LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_WINDEVTOOLSTEST)),
                     MAKEINTRESOURCEW(IDC_WINDEVTOOLSTEST),
                     LoadCursor(nullptr, IDC_ARROW),
-                    (HBRUSH)(COLOR_WINDOW + 1),
+                    (HBRUSH)GetStockObject(LTGRAY_BRUSH),
                     LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_SMALL)),
                     0, 0),
             m_lpszTitle(_szTitle)
@@ -53,11 +59,19 @@ class MainWindow: public AWindow
             {
                 case WM_CREATE:
                     {
-                        EditCtrl.create(_hWnd, 10, 10, 100, 75, (HMENU)1001, ES_MULTILINE | ES_AUTOVSCROLL | WS_VSCROLL | ES_WANTRETURN, NULL);
+                        
+                        hIcon = (HICON)LoadImage(NULL, L"icon1.ico", IMAGE_ICON, 32, 32, LR_LOADFROMFILE);
+                        //hIcon = LoadIcon(hInst, MAKEINTRESOURCE(IDI_ICON1));
+                        EditCtrl.create(_hWnd, 10, 40, 100, 75, (HMENU)1001, ES_MULTILINE | ES_AUTOVSCROLL | WS_VSCROLL | ES_WANTRETURN, NULL);
+                        StaticCtrl.create(_hWnd, 10, 10, 100, 25, (HMENU)1002, SS_ICON);
+                        StaticCtrl.setText(L"Label Test");
+                        StaticCtrl.setTextColor(RGB(0, 0, 255));
+                        StaticCtrl.setBGColor(RGB(192, 0, 192));
+                        StaticCtrl.setIcon(hIcon);
                         //EditCtrl.setReadOnly(true);
                         //EditCtrl.setPassword(true);
                         //EditCtrl.setTextColor(RGB(255, 0, 0));
-                        //EditCtrl.setBGColor(RGB(0, 0, 0));
+                        EditCtrl.setBGColor(RGB(0, 192, 192));
                         SetTimer(_hWnd, 0, 10000, NULL);
                         UINT left, right;
                         //EditCtrl.limitText(5);
@@ -85,10 +99,16 @@ class MainWindow: public AWindow
                         int debug = 0;
                     }
                     break;
-                case WM_CTLCOLOREDIT:
+                case WM_CTLCOLOREDIT:   // Use case for control window map...predefine in AWindowW/AWindowA class non-static WndProc
                     {
                         if((HWND)_lParam == EditCtrl.getHandle())
                             return EditCtrl.handleCTLCOLOREDIT(_wParam);
+                    }
+                    break;
+                case WM_CTLCOLORSTATIC:
+                    {
+                        if((HWND)_lParam == StaticCtrl.getHandle())
+                            return StaticCtrl.handleCTLCOLORSTATIC(_wParam);
                     }
                     break;
                 case WM_COMMAND:

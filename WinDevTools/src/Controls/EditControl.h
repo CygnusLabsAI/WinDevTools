@@ -70,30 +70,12 @@ namespace WinDevTools {
 					void setWordBreakProc(EDITWORDBREAKPROC _EditWordBreakProc);
 					void undo(void);
 
-					// Text Setting and Retrieving
-
-					UINT getText(UINT _uiStrLenZT, LPWSTR _szBuffer);
-					UINT getTextLength(void);
-					bool setText(LPCWSTR _lpszText);
-
-					// Font Setting and Retrieving
-
-					HFONT getFont(void);
-					void setFont(HFONT _hFont = NULL, bool _bRedraw = true);
-
-					// Text and Background Color
-					void setTextColor(COLORREF _Color);
-					void setBGColor(COLORREF _Color);
-
 					// WM_CTLCOLOREDIT Handler
-					LRESULT handleCTLCOLOREDIT(WPARAM _wParam);
+					virtual LRESULT handleCTLCOLOREDIT(WPARAM _wParam) override;
 
 				private:
-					virtual LRESULT WndProc(HWND _hWnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam);
+					virtual LRESULT WndProc(HWND _hWnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam) override;
 
-					HMENU m_hID;
-					COLORREF m_TextColor;
-					COLORREF m_BkColor;
 			};
 		}
 	}
@@ -103,10 +85,10 @@ namespace WinDevTools {
 	#define EditControl EditControlW
 #else
 	#define EditControl
-#endif
+#endif // _UNICODE
 
 #ifndef EDITCONTROL_CPP
-#include "EditControl.cpp"
+	#include "EditControl.cpp"
 #endif // !EDITCONTROL_CPP
 
 #endif // !EDITCONTROL_H

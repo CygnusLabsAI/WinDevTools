@@ -25,10 +25,22 @@ namespace WinDevTools {
 				const LPCWSTR getClassName(void) const { return m_lpszClassName; }
 				const HWND getHandle(void) const { return m_hWnd; }
 
+				// Control WM_xxxx Handlers
+
+				virtual LRESULT handleCTLCOLORMSGBOX(WPARAM _wParam) { return (LRESULT)NULL; }
+				virtual LRESULT handleCTLCOLOREDIT(WPARAM _wParam) { return (LRESULT)NULL; }
+				virtual LRESULT handleCTLCOLORLISTBOX(WPARAM _wParam) { return (LRESULT)NULL; }
+				virtual LRESULT handleCTLCOLORBTN(WPARAM _wParam) { return (LRESULT)NULL; }
+				virtual LRESULT handleCTLCOLORDLG(WPARAM _wParam) { return (LRESULT)NULL; }
+				virtual LRESULT handleCTLCOLORSCROLLBAR(WPARAM _wParam) { return (LRESULT)NULL; }
+				virtual LRESULT handleCTLCOLORSTATIC(WPARAM _wParam) { return (LRESULT)NULL; }
+				virtual LRESULT handleDRAWITEM(WPARAM _wParam) { return (LRESULT)NULL; }
+
 			protected:
 				virtual LRESULT WndProc(HWND _hWnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam) = 0;
 
 			private:
+				LRESULT RedirectWndProc(HWND _hWnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam);
 				static LRESULT Thunk(HWND _hWnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam);
 				static LRESULT CALLBACK S_WndProc(HWND _hWnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam);
 

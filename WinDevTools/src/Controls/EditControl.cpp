@@ -10,10 +10,10 @@ namespace WinDevTools {
 		namespace Control {
 
 			EditControlW::EditControlW(void):
-				AControlWindowW(L"EDIT"),
-				m_TextColor(RGB(0,0,0)),
-				m_BkColor(RGB(255,255,255))
+				AControlWindowW(L"EDIT")
 			{
+				m_TextColor = RGB(0, 0, 0);
+				m_BkColor = RGB(255, 255, 255);
 			}
 
 			const HWND EditControlW::create(HWND _hWndParent, int _iX, int _iY, int _iWidth, int _iHeight, HMENU _hID, DWORD _dwStyle, DWORD _dwExStyle, LPCWSTR _lpszWindowName)
@@ -313,42 +313,6 @@ namespace WinDevTools {
 			void EditControlW::undo(void)
 			{
 				SendMessage(getHandle(), EM_UNDO, NULL, NULL);
-			}
-
-			UINT EditControlW::getText(UINT _uiStrLenZT, LPWSTR _szBuffer)
-			{
-				return SendMessage(getHandle(), WM_GETTEXT, (WPARAM)_uiStrLenZT, (LPARAM)_szBuffer);
-			}
-
-			UINT EditControlW::getTextLength(void)
-			{
-				return SendMessage(getHandle(), WM_GETTEXTLENGTH, NULL, NULL);
-			}
-
-			bool EditControlW::setText(LPCWSTR _lpszText)
-			{
-				return SendMessage(getHandle(), WM_SETTEXT, NULL, (LPARAM)_lpszText);
-			}
-
-			HFONT EditControlW::getFont(void)
-			{
-				return (HFONT)SendMessage(getHandle(), WM_GETFONT, NULL, NULL);
-			}
-
-			void EditControlW::setFont(HFONT _hFont, bool _bRedraw)
-			{
-				SendMessage(getHandle(), WM_SETFONT, (WPARAM)_hFont, MAKELPARAM(_bRedraw, NULL));
-			}
-
-
-			void EditControlW::setTextColor(COLORREF _Color)
-			{
-				m_TextColor = _Color;
-			}
-
-			void EditControlW::setBGColor(COLORREF _Color)
-			{
-				m_BkColor = _Color;
 			}
 
 			LRESULT EditControlW::handleCTLCOLOREDIT(WPARAM _wParam)

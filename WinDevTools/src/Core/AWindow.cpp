@@ -4,6 +4,7 @@
 #include <stdexcept>
 
 #include "AWindow.h"
+#include "WDTWndMgmt.h"
 
 namespace WinDevTools {
 
@@ -58,6 +59,25 @@ namespace WinDevTools {
 			if(!m_hWnd)
 				m_hWnd = CreateWindowEx(_dwExStyle, m_lpszClassName, _lpszWindowName, _dwStyle, _iX, _iY, _iWidth, _iHeight, _hWndParent, _hMenu, m_hInstance, this);
 			
+			if(m_hWnd)
+			{
+				if(!_hWndParent)
+				{
+					if(_dwStyle & WS_POPUP && WDT_POPUP_MGMT) WDT_SET_POPUP(this);
+					else if(WDT_PARENT_MGMT) WDT_SET_PARENT(this);
+				}
+				else
+				{
+					if(_dwStyle & WS_CHILD)
+					{
+						if(std::find(s_szSystemClassNames.begin(), s_szSystemClassNames.end(), m_lpszClassName) != s_szSystemClassNames.end())
+						{
+							if(WDT_CONTROL_MGMT) WDT_SET_CONTROL(this);
+						}
+						else if(WDT_CHILD_MGMT) WDT_SET_CHILD(this);
+					}
+				}
+			}
 			return m_hWnd;
 		}
 
@@ -79,10 +99,51 @@ namespace WinDevTools {
 			else throw std::runtime_error("m_hWnd is null");
 		}
 
+		LRESULT AWindowW::RedirectWndProc(HWND _hWnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam)
+		{
+#ifdef WDT_USE_WINDOW_MGMT
+			if(auto it = sg_WindowMap.find((HWND)_lParam) != sg_WindowMap.end())
+			{
+				switch(_uiMsg)
+				{
+					case WM_CTLCOLORMSGBOX:
+						return sg_WindowMap[(HWND)_lParam]->handleCTLCOLORMSGBOX(_wParam);
+					case WM_CTLCOLOREDIT:
+						return sg_WindowMap[(HWND)_lParam]->handleCTLCOLOREDIT(_wParam);
+					case WM_CTLCOLORLISTBOX:
+						return sg_WindowMap[(HWND)_lParam]->handleCTLCOLORLISTBOX(_wParam);
+					case WM_CTLCOLORBTN:
+						return sg_WindowMap[(HWND)_lParam]->handleCTLCOLORBTN(_wParam);
+					case WM_CTLCOLORDLG:
+						return sg_WindowMap[(HWND)_lParam]->handleCTLCOLORDLG(_wParam);
+					case WM_CTLCOLORSCROLLBAR:
+						return sg_WindowMap[(HWND)_lParam]->handleCTLCOLORSCROLLBAR(_wParam);
+					case WM_CTLCOLORSTATIC:
+						return sg_WindowMap[(HWND)_lParam]->handleCTLCOLORSTATIC(_wParam);
+					case WM_DRAWITEM:
+						return (LRESULT)NULL;
+				}
+			}
+			return LRESULT();
+#endif
+		}
+
 		LRESULT AWindowW::Thunk(HWND _hWnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam)
 		{
 			AWindowW* pThis = (AWindowW*)GetWindowLongPtr(_hWnd, GWLP_USERDATA);
-			if(pThis) return pThis->WndProc(_hWnd, _uiMsg, _wParam, _lParam);
+			if(pThis)
+			{
+				if(_uiMsg == WM_CTLCOLORMSGBOX ||
+				   _uiMsg == WM_CTLCOLOREDIT ||
+				   _uiMsg == WM_CTLCOLORLISTBOX ||
+				   _uiMsg == WM_CTLCOLORBTN ||
+				   _uiMsg == WM_CTLCOLORDLG ||
+				   _uiMsg == WM_CTLCOLORSCROLLBAR ||
+				   _uiMsg == WM_CTLCOLORSTATIC ||
+				   _uiMsg == WM_DRAWITEM
+				   ) return pThis->RedirectWndProc(_hWnd, _uiMsg, _wParam, _lParam);
+				return pThis->WndProc(_hWnd, _uiMsg, _wParam, _lParam);
+			}
 			else return DefWindowProc(_hWnd, _uiMsg, _wParam, _lParam);
 		}
 
