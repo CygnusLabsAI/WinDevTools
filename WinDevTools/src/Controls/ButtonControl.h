@@ -19,6 +19,22 @@ namespace WinDevTools {
 					const HWND create(HWND _hWndParent, int _iX, int _iY, HMENU _hID, DWORD _dwStyle = 0, DWORD _dwExStyle = 0);
 					const HWND create(HWND _hWndParent, int _iX, int _iY, int _iWidth, int _iHeight, HMENU _hID, DWORD _dwStyle = 0, DWORD _dwExStyle = 0);
 
+					// Control Message Functions
+					void click(void);
+					LRESULT getCheck(void);
+					LRESULT getImage(UINT _uiImageType);
+					LRESULT getState(void);
+					void setCheck(UINT _uiCheckState);
+					void setDontClick(bool _bValue);
+					LRESULT setBitmapImage(HBITMAP _hBitmap);
+					LRESULT setIconImage(HICON _hIcon);
+					void setHighlight(bool _bValue);
+					void setStyle(DWORD _dwStyle, bool _bRedraw = true);
+
+					// WM_CTLCOLORBTN Handler
+
+					virtual LRESULT handleCTLCOLORBTN(WPARAM _wParam) override;
+
 				protected:
 					virtual LRESULT WndProc(HWND _hWnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam);
 			};

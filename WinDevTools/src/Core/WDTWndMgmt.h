@@ -68,26 +68,26 @@
 	#define WDT_CONTROL_MGMT false
 #endif // WDT_USE_WINDOW_MGMT
 
-#if WDT_PARENT_MGMT true
+#if WDT_PARENT_MGMT
 	#define WDT_SET_PARENT(p) WDT_SET_WND(p)
 #else
 	#define WDT_ADD_PARENT(p)
-#endif // WDT_PARENT_MGMT true
+#endif // WDT_PARENT_MGMT
 
-#if WDT_CHILD_MGMT true
+#if WDT_CHILD_MGMT
 	#define WDT_SET_CHILD(p) WDT_SET_WND(p)
 #else
 	#define WDT_SET_CHILD(p)
-#endif // WDT_CHILD_MGMT true
+#endif // WDT_CHILD_MGMT
 
-#if WDT_POPUP_MGMT true
+#if WDT_POPUP_MGMT
 	#define WDT_SET_POPUP(p) WDT_SET_WND(p)
 #else
 	#define WDT_ADD_POPUP(p)
-#endif // WDT_POPUP_MGMT true
+#endif // WDT_POPUP_MGMT
 
-#if WDT_CONTROL_MGMT true
+#if WDT_CONTROL_MGMT
 	#define WDT_SET_CONTROL(p) WDT_SET_WND(p)
 #else
 	#define WDT_SET_CONTROL(p)
-#endif // WDT_CONTROL_MGMT true
+#endif // WDT_CONTROL_MGMT

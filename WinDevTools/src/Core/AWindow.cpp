@@ -124,8 +124,8 @@ namespace WinDevTools {
 						return (LRESULT)NULL;
 				}
 			}
-			return LRESULT();
 #endif
+			return WndProc(_hWnd, _uiMsg, _wParam, _lParam);
 		}
 
 		LRESULT AWindowW::Thunk(HWND _hWnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam)
@@ -133,16 +133,20 @@ namespace WinDevTools {
 			AWindowW* pThis = (AWindowW*)GetWindowLongPtr(_hWnd, GWLP_USERDATA);
 			if(pThis)
 			{
-				if(_uiMsg == WM_CTLCOLORMSGBOX ||
-				   _uiMsg == WM_CTLCOLOREDIT ||
-				   _uiMsg == WM_CTLCOLORLISTBOX ||
-				   _uiMsg == WM_CTLCOLORBTN ||
-				   _uiMsg == WM_CTLCOLORDLG ||
-				   _uiMsg == WM_CTLCOLORSCROLLBAR ||
-				   _uiMsg == WM_CTLCOLORSTATIC ||
-				   _uiMsg == WM_DRAWITEM
-				   ) return pThis->RedirectWndProc(_hWnd, _uiMsg, _wParam, _lParam);
-				return pThis->WndProc(_hWnd, _uiMsg, _wParam, _lParam);
+				switch(_uiMsg)
+				{
+					case WM_CTLCOLORMSGBOX:
+					case WM_CTLCOLOREDIT:
+					case WM_CTLCOLORLISTBOX:
+					case WM_CTLCOLORBTN:
+					case WM_CTLCOLORDLG:
+					case WM_CTLCOLORSCROLLBAR:
+					case WM_CTLCOLORSTATIC:
+					case WM_DRAWITEM:
+						return pThis->RedirectWndProc(_hWnd, _uiMsg, _wParam, _lParam);
+					default:
+						return pThis->WndProc(_hWnd, _uiMsg, _wParam, _lParam);
+				} 			
 			}
 			else return DefWindowProc(_hWnd, _uiMsg, _wParam, _lParam);
 		}
