@@ -102,6 +102,12 @@ namespace WinDevTools {
 		LRESULT AWindowW::RedirectWndProc(HWND _hWnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam)
 		{
 #ifdef WDT_USE_WINDOW_MGMT
+			if(_uiMsg == WM_DRAWITEM)
+			{
+				LPDRAWITEMSTRUCT pDIS = (LPDRAWITEMSTRUCT)_lParam;
+				if(auto it = sg_WindowMap.find(pDIS->hwndItem) != sg_WindowMap.end())
+					return sg_WindowMap[pDIS->hwndItem]->handleDRAWITEM(pDIS);
+			}
 			if(auto it = sg_WindowMap.find((HWND)_lParam) != sg_WindowMap.end())
 			{
 				switch(_uiMsg)
@@ -120,8 +126,6 @@ namespace WinDevTools {
 						return sg_WindowMap[(HWND)_lParam]->handleCTLCOLORSCROLLBAR(_wParam);
 					case WM_CTLCOLORSTATIC:
 						return sg_WindowMap[(HWND)_lParam]->handleCTLCOLORSTATIC(_wParam);
-					case WM_DRAWITEM:
-						return (LRESULT)NULL;
 				}
 			}
 #endif

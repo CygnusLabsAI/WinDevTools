@@ -26,7 +26,7 @@ namespace WinDevTools {
 				const HWND getHandle(void) const { return m_hWnd; }
 
 				// Control WM_xxxx Handlers
-
+			protected:
 				virtual LRESULT handleCTLCOLORMSGBOX(WPARAM _wParam) { return (LRESULT)NULL; }
 				virtual LRESULT handleCTLCOLOREDIT(WPARAM _wParam) { return (LRESULT)NULL; }
 				virtual LRESULT handleCTLCOLORLISTBOX(WPARAM _wParam) { return (LRESULT)NULL; }
@@ -34,7 +34,7 @@ namespace WinDevTools {
 				virtual LRESULT handleCTLCOLORDLG(WPARAM _wParam) { return (LRESULT)NULL; }
 				virtual LRESULT handleCTLCOLORSCROLLBAR(WPARAM _wParam) { return (LRESULT)NULL; }
 				virtual LRESULT handleCTLCOLORSTATIC(WPARAM _wParam) { return (LRESULT)NULL; }
-				virtual LRESULT handleDRAWITEM(WPARAM _wParam) { return (LRESULT)NULL; }
+				virtual LRESULT handleDRAWITEM(LPDRAWITEMSTRUCT _lpDrawItemStruct) { return (LRESULT)TRUE; }
 
 			protected:
 				virtual LRESULT WndProc(HWND _hWnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam) = 0;

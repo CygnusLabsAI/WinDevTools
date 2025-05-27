@@ -65,6 +65,11 @@ namespace WinDevTools {
 				return (LRESULT)((HBRUSH)GetStockObject(DC_BRUSH));
 			}
 
+			LRESULT StaticControlW::handleDRAWITEM(LPDRAWITEMSTRUCT _lpDrawItemStruct)
+			{
+				return (LRESULT)TRUE;
+			}
+
 			LRESULT StaticControlW::WndProc(HWND _hWnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam)
 			{
 				return DefWindowProc(_hWnd, _uiMsg, _wParam, _lParam);

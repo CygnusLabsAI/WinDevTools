@@ -19,7 +19,16 @@ namespace WinDevTools {
 					const HWND create(HWND _hWndParent, int _iX, int _iY, HMENU _hID, DWORD _dwStyle = 0, DWORD _dwExStyle = 0);
 					const HWND create(HWND _hWndParent, int _iX, int _iY, int _iWidth, int _iHeight, HMENU _hID, DWORD _dwStyle = 0, DWORD _dwExStyle = 0);
 
+					// Helper Functions
+
+					bool isState(WORD _wStateFlag);
+					COLORREF getSelectedTextColor(void) { return m_SelectedTextColor; }
+					COLORREF getBorderColor(void) { return m_BorderColor; }
+					void setSelectedTextColor(COLORREF _SelectedTextColor) { m_SelectedTextColor = _SelectedTextColor; }
+					void setBorderColor(COLORREF _BorderColor) { m_BorderColor = _BorderColor; }
+
 					// Control Message Functions
+					
 					void click(void);
 					LRESULT getCheck(void);
 					LRESULT getImage(UINT _uiImageType);
@@ -32,11 +41,17 @@ namespace WinDevTools {
 					void setStyle(DWORD _dwStyle, bool _bRedraw = true);
 
 					// WM_CTLCOLORBTN Handler
-
 					virtual LRESULT handleCTLCOLORBTN(WPARAM _wParam) override;
 
+					// WM_DRAWITEM Handler
+					virtual LRESULT handleDRAWITEM(LPDRAWITEMSTRUCT _lpDrawItemStruct) override;
+
 				protected:
-					virtual LRESULT WndProc(HWND _hWnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam);
+					virtual LRESULT WndProc(HWND _hWnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam) override;
+
+					COLORREF m_SelectedTextColor;
+					COLORREF m_BorderColor;
+
 			};
 
 		}

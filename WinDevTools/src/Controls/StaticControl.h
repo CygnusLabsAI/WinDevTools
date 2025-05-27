@@ -30,6 +30,9 @@ namespace WinDevTools {
 					// WM_CTLCOLORSTATIC Handler
 					virtual LRESULT handleCTLCOLORSTATIC(WPARAM _wParam) override;
 
+					// WM_DRAWITEM Handler
+					virtual LRESULT handleDRAWITEM(LPDRAWITEMSTRUCT _lpDrawItemStruct) override;
+
 				protected:
 					virtual LRESULT WndProc(HWND _hWnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam) override;
 			};

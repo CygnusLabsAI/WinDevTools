@@ -72,6 +72,7 @@ namespace WinDevTools {
 
 					// WM_CTLCOLOREDIT Handler
 					virtual LRESULT handleCTLCOLOREDIT(WPARAM _wParam) override;
+					virtual LRESULT handleCTLCOLORSTATIC(WPARAM _wParam) override { return (LRESULT)NULL; }
 
 				private:
 					virtual LRESULT WndProc(HWND _hWnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam) override;

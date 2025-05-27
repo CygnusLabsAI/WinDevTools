@@ -21,6 +21,7 @@ WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 Control::EditControl EditCtrl;
 Control::StaticControlW StaticCtrl;
 Control::ButtonControl ButtonCtrl;
+Control::ButtonControl ButtonCtrl2;
 // Forward declarations of functions included in this code module:
 //ATOM                MyRegisterClass(HINSTANCE hInstance);
 //BOOL                InitInstance(HINSTANCE, int);
@@ -57,14 +58,23 @@ class MainWindow: public AWindow
 
         virtual LRESULT WndProc(HWND _hWnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam)
         {
+            if(_uiMsg == WM_DRAWITEM)
+            {
+                int debug = 0;
+            }
             switch(_uiMsg)
             {
                 case WM_CREATE:
                     {
                         
                         hIcon = (HICON)LoadImage(NULL, L"icon1.ico", IMAGE_ICON, 32, 32, LR_LOADFROMFILE);
-                        ButtonCtrl.create(_hWnd, 10, 10, 100, 50, (HMENU)1001, BS_CHECKBOX | BS_PUSHLIKE, NULL, L"Push Me!");
+                        ButtonCtrl.create(_hWnd, 10, 10, 100, 50, (HMENU)1001, BS_OWNERDRAW | BS_CENTER | BS_VCENTER, NULL, L"Push Me!");
+                        ButtonCtrl2.create(_hWnd, 120, 10, 100, 50, (HMENU)1002, BS_PUSHBUTTON, NULL, L"Push Me!");
                         ButtonCtrl.setIconImage(hIcon);
+                        ButtonCtrl.setBGColor(RGB(240, 0, 0));
+                        ButtonCtrl.setTextColor(RGB(0, 0, 255));
+                        
+                        
                         int debug = 0;
                     }
                     return DefWindowProc(_hWnd, _uiMsg, _wParam, _lParam);
@@ -102,6 +112,18 @@ class MainWindow: public AWindow
                     break;
                 case WM_COMMAND:
                     {
+                        RedrawWindow(ButtonCtrl.getHandle(), NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+                        switch(HIWORD(_wParam))
+                        {
+                            case BN_CLICKED:
+                                {
+                                    if(((Control::ButtonControl*)sg_WindowMap[(HWND)_lParam])->isState(BST_CHECKED))
+                                        ((Control::ButtonControl*)sg_WindowMap[(HWND)_lParam])->setCheck(BST_UNCHECKED);
+                                    else
+                                        ((Control::ButtonControl*)sg_WindowMap[(HWND)_lParam])->setCheck(BST_CHECKED);
+                                }
+                        }
+
                         int wmId = LOWORD(_wParam);
                         // Parse the menu selections:
                         switch(wmId)
@@ -175,6 +197,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     // Main message loop:
     while (GetMessage(&msg, nullptr, 0, 0))
     {
+       
         if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
         {
             TranslateMessage(&msg);
