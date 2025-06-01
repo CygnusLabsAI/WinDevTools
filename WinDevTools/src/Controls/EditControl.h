@@ -88,6 +88,10 @@ namespace WinDevTools {
 	#define EditControl
 #endif // _UNICODE
 
+#ifdef WDT_USE_WINDOW_MGMT
+	#define PtrEdit(hwnd) ((WinDevTools::GUI::Control::EditControl*)sg_WindowMap[hwnd])
+#endif // WDT_USE_WINDOW_MGMT
+
 #ifndef EDITCONTROL_CPP
 	#include "EditControl.cpp"
 #endif // !EDITCONTROL_CPP

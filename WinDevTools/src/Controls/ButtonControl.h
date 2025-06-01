@@ -64,6 +64,10 @@ namespace WinDevTools {
 	#define ButtonControl
 #endif // _UNICODE
 
+#ifdef WDT_USE_WINDOW_MGMT
+	#define PtrButton(hwnd) ((WinDevTools::GUI::Control::ButtonControl*)sg_WindowMap[hwnd])
+#endif // WDT_USE_WINDOW_MGMT
+
 #ifndef BUTTONCONTROL_CPP
 	#include "ButtonControl.cpp"
 #endif // !BUTTONCONTROL_CPP

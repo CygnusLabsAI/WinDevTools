@@ -144,6 +144,7 @@
     <ClCompile Include="src\Controls\AControlWindow.cpp" />
     <ClCompile Include="src\Controls\ButtonControl.cpp" />
     <ClCompile Include="src\Controls\EditControl.cpp" />
+    <ClCompile Include="src\Controls\ScrollbarControl.cpp" />
     <ClCompile Include="src\Controls\StaticControl.cpp" />
     <ClCompile Include="src\Core\AChildWindow.cpp" />
     <ClCompile Include="src\Core\APopupWindow.cpp" />
@@ -153,6 +154,7 @@
     <ClInclude Include="src\Controls\AControlWindow.h" />
     <ClInclude Include="src\Controls\ButtonControl.h" />
     <ClInclude Include="src\Controls\EditControl.h" />
+    <ClInclude Include="src\Controls\ScrollbarControl.h" />
     <ClInclude Include="src\Controls\StaticControl.h" />
     <ClInclude Include="src\Core\AChildWindow.h" />
     <ClInclude Include="src\Core\APopupWindow.h" />

@@ -6,6 +6,7 @@
 #include "Controls/EditControl.h"
 #include "Controls/StaticControl.h"
 #include "Controls/ButtonControl.h"
+#include "Controls/ScrollbarControl.h"
 
 using namespace WinDevTools::GUI;
 
@@ -22,6 +23,9 @@ Control::EditControl EditCtrl;
 Control::StaticControlW StaticCtrl;
 Control::ButtonControl ButtonCtrl;
 Control::ButtonControl ButtonCtrl2;
+Control::ScrollbarControl ScrollbarCtrlH;
+Control::ScrollbarControl ScrollbarCtrlV;
+
 // Forward declarations of functions included in this code module:
 //ATOM                MyRegisterClass(HINSTANCE hInstance);
 //BOOL                InitInstance(HINSTANCE, int);
@@ -68,6 +72,12 @@ class MainWindow: public AWindow
                     {
                         
                         hIcon = (HICON)LoadImage(NULL, L"icon1.ico", IMAGE_ICON, 32, 32, LR_LOADFROMFILE);
+                        ScrollbarCtrlH.create(_hWnd, 50, 70, 100, 20, (HMENU)1003, SBS_HORZ);
+                        ScrollbarCtrlH.setBGColor(RGB(0, 255, 0));
+                        ScrollbarCtrlV.create(_hWnd, 10, 70, 20, 100, (HMENU)1004, SBS_VERT);
+                        ScrollbarCtrlH.setRange(0, 6);
+                        ScrollbarCtrlH.setPos(0);
+                        ScrollbarCtrlV.setRange(0, 0);
                         ButtonCtrl.create(_hWnd, 10, 10, 100, 50, (HMENU)1001, BS_OWNERDRAW | BS_CENTER | BS_VCENTER, NULL, L"Push Me!");
                         ButtonCtrl2.create(_hWnd, 120, 10, 100, 50, (HMENU)1002, BS_PUSHBUTTON, NULL, L"Push Me!");
                         ButtonCtrl.setIconImage(hIcon);
@@ -121,6 +131,20 @@ class MainWindow: public AWindow
                                         ((Control::ButtonControl*)sg_WindowMap[(HWND)_lParam])->setCheck(BST_UNCHECKED);
                                     else
                                         ((Control::ButtonControl*)sg_WindowMap[(HWND)_lParam])->setCheck(BST_CHECKED);
+                                    if(((Control::ButtonControlW*)sg_WindowMap[(HWND)_lParam])->getCtrlID() == ButtonCtrl.getCtrlID())
+                                    {
+                                        ScrollbarCtrlH.setBGColor(RGB(255, 0, 0));
+                                        ScrollbarCtrlH.setPos(0, true);
+                                        ScrollbarCtrlV.setPos(3, true);
+                                        RedrawWindow(ScrollbarCtrlH.getHandle(), NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+                                    }
+                                    else if(((Control::ButtonControlW*)sg_WindowMap[(HWND)_lParam])->getCtrlID() == ButtonCtrl2.getCtrlID())
+                                    {
+                                        ScrollbarCtrlH.setBGColor(RGB(0, 255, 0));
+                                        ScrollbarCtrlH.setPos(3, true);
+                                        ScrollbarCtrlV.setPos(0, true);
+                                        RedrawWindow(ScrollbarCtrlH.getHandle(), NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+                                    }
                                 }
                         }
 
@@ -142,6 +166,37 @@ class MainWindow: public AWindow
                                 break;
                             default:
                                 return DefWindowProc(_hWnd, _uiMsg, _wParam, _lParam);
+                        }
+                    }
+                    break;
+                case WM_HSCROLL:
+                    {
+                        if(_lParam)
+                        {
+                            switch(LOWORD(_wParam))
+                            {
+                                case SB_LINELEFT:
+                                    {
+                                        
+                                        if(PtrScrollbar((HWND)_lParam)->getPos() > 0)
+                                        {
+                                            PtrScrollbar((HWND)_lParam)->setPos(PtrScrollbar((HWND)_lParam)->getPos() - 1, true);
+                                            ScrollWindow(PtrScrollbar((HWND)_lParam)->getParentHandle(), -10, 0, NULL, NULL);
+                                        }
+                                    }
+                                    break;
+                                case SB_LINERIGHT:
+                                    {
+                                        int range[2];
+                                        PtrScrollbar((HWND)_lParam)->getRange(&range[0], &range[1]);
+                                        if(PtrScrollbar((HWND)_lParam)->getPos() < range[1])
+                                        {
+                                            PtrScrollbar((HWND)_lParam)->setPos(PtrScrollbar((HWND)_lParam)->getPos() + 1, true);
+                                            ScrollWindow(PtrScrollbar((HWND)_lParam)->getParentHandle(), 10, 0, NULL, NULL);
+                                        }
+                                    }
+                                    break;
+                            }
                         }
                     }
                     break;

@@ -46,6 +46,9 @@ namespace WinDevTools {
 	#define StaticControl
 #endif // _UNICODE
 
+#ifdef WDT_USE_WINDOW_MGMT
+	#define PtrStatic(hwnd) ((WinDevTools::GUI::Control::StaticControl*)sg_WindowMap[hwnd])
+#endif // WDT_USE_WINDOW_MGMT
 
 #ifndef STATICCONTROL_CPP
 	#include "StaticControl.cpp"
