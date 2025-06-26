@@ -2,19 +2,23 @@
 #define AWINDOW_CPP
 
 #include <stdexcept>
-
 #include "AWindow.h"
 #include "WDTWndMgmt.h"
+#ifdef WDT_USE_COMCTL32_CONTROLS
+	#pragma comment(lib, "Comctl32.lib")
+	#include <CommCtrl.h>
+#endif // WDT_USE_COMCTL32_CONTROLS
+
 
 namespace WinDevTools {
 
 	namespace GUI {
 
 #ifdef _INC_COMMCTRL
-		const std::vector<std::wstring> AWindowW::s_szSystemClassNames = { ANIMATE_CLASS,  TEXT("BUTTON"), TEXT("COMBOBOX"), DATETIMEPICK_CLASS, TEXT("EDIT"), HOTKEY_CLASS, LINK_CLASS, TEXT("LISTBOX"), TEXT("MDICLIENT"), MONTHCAL_CLASS, NATIVEFNTCTL_CLASS, PROGRESS_CLASS, REBARCLASSNAME, TEXT("SCROLLBAR"), TEXT("STATIC"), STATUSCLASSNAME, TOOLBARCLASSNAME, TOOLTIPS_CLASS, TRACKBAR_CLASS, UPDOWN_CLASS, WC_BUTTON, WC_COMBOBOX, WC_COMBOBOXEX, WC_EDIT, WC_HEADER, WC_LISTBOX, WC_IPADDRESS, WC_LINK, WC_LISTVIEW, WC_NATIVEFONTCTL, WC_PAGESCROLLER, WC_SCROLLBAR, WC_STATIC, WC_TABCONTROL, WC_TREEVIEW };
+		const std::vector<std::wstring> AWindowW::s_szSystemClassNames = { ANIMATE_CLASS,  TEXT("BUTTON"), TEXT("COMBOBOX"), DATETIMEPICK_CLASS, TEXT("EDIT"), HOTKEY_CLASS, /*LINK_CLASS,*/ TEXT("LISTBOX"), TEXT("MDICLIENT"), MONTHCAL_CLASS, /*NATIVEFNTCTL_CLASS,*/ PROGRESS_CLASS, REBARCLASSNAME, TEXT("SCROLLBAR"), TEXT("STATIC"), STATUSCLASSNAME, TOOLBARCLASSNAME, TOOLTIPS_CLASS, TRACKBAR_CLASS, UPDOWN_CLASS, WC_BUTTON, WC_COMBOBOX, WC_COMBOBOXEX, WC_EDIT, WC_HEADER, WC_LISTBOX, WC_IPADDRESS, WC_LINK, WC_LISTVIEW, WC_NATIVEFONTCTL, WC_PAGESCROLLER, WC_SCROLLBAR, WC_STATIC, WC_TABCONTROL, WC_TREEVIEW};
 #else
 		const std::vector<std::wstring> AWindowW::s_szSystemClassNames = { TEXT("BUTTON"), TEXT("COMBOBOX"), TEXT("EDIT"), TEXT("LISTBOX"), TEXT("MDICLIENT"), TEXT("SCROLLBAR"), TEXT("STATIC") };
-#endif
+#endif // _INC_COMMCTRL
 
 		AWindowW::AWindowW(LPCWSTR _lpszClassName, DWORD _dwStyle, HICON _hIcon, LPCWSTR _lpszMenuName, HCURSOR _hCursor, HBRUSH _hbrBackground, HICON _hIconSm, int _cbClsExtra, int _cbWndExtra, HINSTANCE _hInstance):
 			m_hInstance(_hInstance),
@@ -52,6 +56,41 @@ namespace WinDevTools {
 					}
 				}
 			}
+#ifdef _INC_COMMCTRL
+			else
+			{
+				if(s_szSystemClassNames.size() > 5)
+				{
+					INITCOMMONCONTROLSEX icce;
+					icce.dwSize = sizeof(INITCOMMONCONTROLSEX);
+					icce.dwICC = 0;
+					LPCWSTR pszWindowClassName = (*it).c_str();
+					if(lstrcmp(pszWindowClassName, WC_LISTVIEWW) == 0) icce.dwICC |= ICC_LISTVIEW_CLASSES;
+					if(lstrcmp(pszWindowClassName, WC_HEADERW) == 0) icce.dwICC |= ICC_LISTVIEW_CLASSES;
+					if(lstrcmp(pszWindowClassName, TOOLTIPS_CLASSW) == 0) icce.dwICC |= ICC_WIN95_CLASSES;	// Is there a better way to include the Tooltip Control?
+					if(lstrcmp(pszWindowClassName, WC_TREEVIEWW) == 0) icce.dwICC |= ICC_TREEVIEW_CLASSES;	// Includes Tooltip Control
+					if(lstrcmp(pszWindowClassName, TOOLBARCLASSNAMEW) == 0) icce.dwICC |= ICC_BAR_CLASSES;	// Includes Tooltip Control
+					if(lstrcmp(pszWindowClassName, STATUSCLASSNAMEW) == 0) icce.dwICC |= ICC_BAR_CLASSES;	// Includes Tooltip Control
+					if(lstrcmp(pszWindowClassName, TRACKBAR_CLASSW) == 0) icce.dwICC |= ICC_BAR_CLASSES;	// Includes Tooltip Control
+					if(lstrcmp(pszWindowClassName, WC_TABCONTROLW) == 0) icce.dwICC |= ICC_TAB_CLASSES;		// Includes Tooltip Control
+					if(lstrcmp(pszWindowClassName, ANIMATE_CLASSW) == 0) icce.dwICC |= ICC_ANIMATE_CLASS;
+					if(lstrcmp(pszWindowClassName, UPDOWN_CLASSW) == 0) icce.dwICC |= ICC_UPDOWN_CLASS;
+					if(lstrcmp(pszWindowClassName, PROGRESS_CLASSW) == 0) icce.dwICC |= ICC_PROGRESS_CLASS;
+					if(lstrcmp(pszWindowClassName, HOTKEY_CLASSW) == 0) icce.dwICC |= ICC_HOTKEY_CLASS;
+					if(lstrcmp(pszWindowClassName, DATETIMEPICK_CLASSW) == 0) icce.dwICC |= ICC_DATE_CLASSES;
+					if(lstrcmp(pszWindowClassName, WC_COMBOBOXEXW) == 0) icce.dwICC |= ICC_USEREX_CLASSES;
+					if(lstrcmp(pszWindowClassName, REBARCLASSNAMEW) == 0) icce.dwICC |= ICC_COOL_CLASSES;
+					if(lstrcmp(pszWindowClassName, WC_IPADDRESSW) == 0) icce.dwICC |= ICC_INTERNET_CLASSES;
+					if(lstrcmp(pszWindowClassName, WC_PAGESCROLLERW) == 0) icce.dwICC |= ICC_PAGESCROLLER_CLASS;
+					if(lstrcmp(pszWindowClassName, WC_NATIVEFONTCTLW) == 0) icce.dwICC |= ICC_NATIVEFNTCTL_CLASS;
+					if(icce.dwICC)
+					{
+						if(!InitCommonControlsEx(&icce)) std::runtime_error("AWindowW::AWindowW() - InitCommonControlsEx failed");
+					}
+				}
+			}
+#endif // _INC_COMMCTRL
+	
 		}
 
 		const HWND AWindowW::create(int _iWidth, int _iHeight, LPCWSTR _lpszWindowName, HWND _hWndParent, int _iX, int _iY, DWORD _dwStyle, HMENU _hMenu, DWORD _dwExStyle)

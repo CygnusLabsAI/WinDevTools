@@ -24,6 +24,7 @@
 
 #define WDT_USE_WINDOW_MGMT
 #define WDT_MANAGE_ALL
+#define WDT_USE_COMCTL32_CONTROLS
 
 #ifdef WDT_USE_WINDOW_MGMT
 	#include <Windows.h>

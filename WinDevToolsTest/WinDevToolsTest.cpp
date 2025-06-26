@@ -7,6 +7,9 @@
 #include "Controls/StaticControl.h"
 #include "Controls/ButtonControl.h"
 #include "Controls/ScrollbarControl.h"
+#include <windowsx.h>
+#include <CommCtrl.h>
+#include "Controls/Comctl32 Controls/TooltipControl.h"
 
 using namespace WinDevTools::GUI;
 
@@ -25,6 +28,7 @@ Control::ButtonControl ButtonCtrl;
 Control::ButtonControl ButtonCtrl2;
 Control::ScrollbarControl ScrollbarCtrlH;
 Control::ScrollbarControl ScrollbarCtrlV;
+Control::TooltipControl TooltipCtrl;
 
 // Forward declarations of functions included in this code module:
 //ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -54,7 +58,8 @@ class MainWindow: public AWindow
                     (HBRUSH)GetStockObject(LTGRAY_BRUSH),
                     LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_SMALL)),
                     0, 0),
-            m_lpszTitle(_szTitle)
+            m_lpszTitle(_szTitle),
+            m_TrackingMouse(false)
 
         {
 
@@ -62,9 +67,55 @@ class MainWindow: public AWindow
 
         virtual LRESULT WndProc(HWND _hWnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam)
         {
-            if(_uiMsg == WM_DRAWITEM)
+            if(_uiMsg == WM_MOUSELEAVE)
             {
-                int debug = 0;
+                TooltipCtrl.trackActivate(ButtonCtrl2.getHandle(), false);
+                m_TrackingMouse = false;
+                return FALSE;
+            }
+            if(_uiMsg == WM_MOUSEMOVE)
+            {
+                static int oldX, oldY;
+                int newX, newY;
+
+                if(!m_TrackingMouse)
+                {
+                    TRACKMOUSEEVENT tme = { sizeof(TRACKMOUSEEVENT) };
+                    tme.hwndTrack = _hWnd;
+                    tme.dwFlags = TME_LEAVE;
+
+                    TrackMouseEvent(&tme);
+
+                    TooltipCtrl.trackActivate(ButtonCtrl2.getHandle(), true);
+
+                    m_TrackingMouse = true;
+                }
+
+                newX = GET_X_LPARAM(_lParam);
+                newY = GET_Y_LPARAM(_lParam);
+
+                if((newX != oldX) || (newY != oldY))
+                {
+                    oldX = newX;
+                    oldY = newY;
+
+                    WCHAR coords[12];
+                    swprintf_s(coords, ARRAYSIZE(coords), TEXT("(%d, %d)\0"), newX, newY);
+
+                    TooltipCtrl.updateTipText(ButtonCtrl2.getHandle(), coords);
+
+                    POINT pt = { newX, newY };
+                    ClientToScreen(_hWnd, &pt);
+                    pt.x += 10;
+                    pt.y -= 20;
+                    TooltipCtrl.trackPosition(pt);
+                }
+
+                bool result = TooltipCtrl.getCurrentTool();
+                TOOLINFOW ti2 = { 0 };
+                ti2.cbSize = TTTOOLINFOW_V1_SIZE;
+                result = TooltipCtrl.getCurrentTool(&ti2);
+                return FALSE;
             }
             switch(_uiMsg)
             {
@@ -83,7 +134,27 @@ class MainWindow: public AWindow
                         ButtonCtrl.setIconImage(hIcon);
                         ButtonCtrl.setBGColor(RGB(240, 0, 0));
                         ButtonCtrl.setTextColor(RGB(0, 0, 255));
+                        TooltipCtrl.create(ButtonCtrl.getParentHandle(), TTF_IDISHWND | TTF_TRACK | TTF_ABSOLUTE);
                         
+                        TooltipCtrl.addTool(ButtonCtrl.getHandle(), L"I'm a Tooltip!");
+                        TooltipCtrl.addTool(ButtonCtrl2.getHandle(), L"I'm ALSO a Tooltip!");
+
+                        RECT rect = { 10, 10, 100, 25 };
+                        bool result = TooltipCtrl.adjustRect(rect, true);
+                        TooltipCtrl.delTool(ButtonCtrl.getHandle());
+                        TooltipCtrl.activate(true);
+
+                        WCHAR* szBuffer = new WCHAR[50];
+                        TooltipCtrl.getText(ButtonCtrl2.getHandle(), szBuffer, 50);
+
+                        TOOLINFOW ti = { 0 };
+                        WCHAR szTest[] = L"I got reset to this!\0";
+                        ti.lpszText = szTest;
+                        TooltipCtrl.setToolInfo(ButtonCtrl2.getHandle(), ti);
+
+                        WCHAR szTest2[] = L"Now I'm reset to THIS!!\0";
+                        TooltipCtrl.updateTipText(ButtonCtrl2.getHandle(), szTest2);
+
                         
                         int debug = 0;
                     }
@@ -218,6 +289,7 @@ class MainWindow: public AWindow
         }
     private:
         LPWSTR m_lpszTitle;
+        bool m_TrackingMouse;
 };
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,

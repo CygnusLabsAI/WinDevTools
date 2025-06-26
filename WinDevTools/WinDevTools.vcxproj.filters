@@ -39,6 +39,9 @@
     <ClCompile Include="src\Controls\ScrollbarControl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Controls\Comctl32 Controls\TooltipControl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Core\AChildWindow.h">
@@ -66,6 +69,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Controls\ScrollbarControl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Controls\Comctl32 Controls\TooltipControl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

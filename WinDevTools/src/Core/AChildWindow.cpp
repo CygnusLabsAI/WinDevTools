@@ -12,6 +12,7 @@ namespace WinDevTools {
 			m_hWndParent(NULL)
 		{
 		}
+
 		const HWND AChildWindowW::create(HWND _hWndParent, int _iWidth, int _iHeight, LPCWSTR _lpszWindowName, int _iX, int _iY, DWORD _dwStyle, HMENU _hMenu, DWORD _dwExStyle)
 		{
 			if(!m_hWndParent)
