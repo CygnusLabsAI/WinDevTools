@@ -138,6 +138,11 @@ namespace WinDevTools {
 			else throw std::runtime_error("m_hWnd is null");
 		}
 
+		bool AWindowW::setPosition(HWND _hWndInsertAfter, int _iX, int _iY, int _iWidth, int _iHeight, uint16_t _uiFlags)
+		{
+			return SetWindowPos(m_hWnd, _hWndInsertAfter, _iX, _iY, _iWidth, _iHeight, (UINT)_uiFlags);
+		}
+
 		LRESULT AWindowW::RedirectWndProc(HWND _hWnd, UINT _uiMsg, WPARAM _wParam, LPARAM _lParam)
 		{
 #ifdef WDT_USE_WINDOW_MGMT

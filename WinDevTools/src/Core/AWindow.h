@@ -25,6 +25,8 @@ namespace WinDevTools {
 				const LPCWSTR getClassName(void) const { return m_lpszClassName; }
 				const HWND getHandle(void) const { return m_hWnd; }
 
+				bool setPosition(HWND _hWndInsertAfter, int _iX, int _iY, int _iWidth, int _iHeight, uint16_t _uiFlags);
+
 				// Control WM_xxxx Handlers
 			protected:
 				virtual LRESULT handleCTLCOLORMSGBOX(WPARAM _wParam) { return (LRESULT)NULL; }
